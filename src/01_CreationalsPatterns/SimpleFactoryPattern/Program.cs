@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http.Headers;
 
 namespace SimpleFactoryPattern
 {
@@ -17,7 +18,12 @@ namespace SimpleFactoryPattern
 
         private static void VisitCalculateAmountTest()
         {
-            VisitFactory visitFactory = new VisitFactory();
+            VisitFactory2 visitFactory = new VisitFactory2();
+
+            visitFactory.Register("N", new NfzCalculateCostStrategy());
+            visitFactory.Register("P", new PrivateCalculateCostStrategy(new VisitOptions(100)));
+            visitFactory.Register("F", new CompanyCalculateCostStrategy(new CompanyVisitOptions(100, 0.9m)));
+            
 
             while (true)
             {
@@ -29,9 +35,12 @@ namespace SimpleFactoryPattern
                 {
                     TimeSpan duration = TimeSpan.FromMinutes(minutes);
 
-                    IVisit visit = visitFactory.Create(visitType, duration, 100);
+                    ICalculateCostStrategy calculateCostStrategy = visitFactory.Create(visitType);
+                    
+                    Visit visit = new Visit();
+                    visit.SetStrategy(calculateCostStrategy);
 
-                    decimal totalAmount = visit.CalculateCost();
+                    decimal totalAmount = visit.CalculateCost(duration);
 
                     if (totalAmount == 0)
                         Console.ForegroundColor = ConsoleColor.Green;
