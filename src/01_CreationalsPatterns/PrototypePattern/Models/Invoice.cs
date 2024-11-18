@@ -5,11 +5,28 @@ using System.Security.Cryptography;
 
 namespace PrototypePattern
 {
-    public class Bill
+    public class Bill : ICloneable
     {
         public string Number { get; set; }
         public DateTime CreateDate { get; set; }
         public decimal TotalAmount { get; set; }
+        public bool IsPaid { get; set; }
+        public Customer Customer { get; set; }
+        public List<BillItem> Items { get; set; }
+
+        public object Clone()
+        {
+            return this.MemberwiseClone(); // (Shallow Copy) Płytka Kopia
+        }
+    }
+    
+    // Deep Copy (Głębokia Kopia)
+    // https://github.com/AlenToma/FastDeepCloner
+    public class BillItem
+    {
+        public string Title { get; set; }
+        public  decimal Price { get; set; }
+        public int Quantity { get; set; }
     }
 
     public class Invoice : ICloneable
