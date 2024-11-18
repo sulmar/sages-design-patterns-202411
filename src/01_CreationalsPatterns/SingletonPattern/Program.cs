@@ -18,13 +18,26 @@ namespace SingletonPattern
 
         private static void LoadBalancerTest()
         {
+            //LoadBalancer loadBalancer1 = LoadBalancer.Instance;
+            //LoadBalancer loadBalancer2 = LoadBalancer.Instance;
+
+            //if (ReferenceEquals(loadBalancer1, loadBalancer2))
+            //{
+            //    Console.WriteLine("Instance are the same");
+            //}
+            //else
+            //{
+            //    Console.WriteLine("Diffrenent instances");
+            //}
+
+
             Task.Run(() => LoadBalanceRequestTest(15));
             Task.Run(() => LoadBalanceRequestTest(15));
         }
 
         private static void LoadBalanceRequestTest(int numberOfRequests)
         {
-            LoadBalancer loadBalancer = new LoadBalancer();
+            LoadBalancer loadBalancer = LoadBalancer.Instance;
 
             for (int i = 0; i < numberOfRequests; i++)
             {
