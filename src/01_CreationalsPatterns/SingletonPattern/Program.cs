@@ -12,6 +12,9 @@ namespace SingletonPattern
             LoadBalancerTest();
 
             Console.ReadKey();
+
+            // ServiceCollection services;
+            // services.AddSingleton<Logger>();
         }
 
       
