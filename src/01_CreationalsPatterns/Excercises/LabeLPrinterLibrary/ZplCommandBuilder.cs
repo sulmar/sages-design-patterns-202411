@@ -14,28 +14,27 @@ public class Product
 public class PrinterDirector
 {
     private ICommandBuilder builder;
-    private readonly LabelPrinterServiceFactory factory;
+    private readonly ILabelPrinterService printerService;
 
-    public PrinterDirector(ICommandBuilder builder, LabelPrinterServiceFactory factory)
+    public PrinterDirector(ICommandBuilder builder, ILabelPrinterService printerService)
     {
         this.builder = builder;
-        this.factory = factory;
+        this.printerService = printerService;
     }
 
     public void PrintLabel(Product product)
     {
         builder.AddHeader();
-        builder.SetLocation(10, 10); 
+        builder.SetLocation(10, 10);
         builder.AddText(product.Name);
 
         builder.SetLocation(10, 20);
-        builder.AddBarcode(product.Barcode);        
+        builder.AddBarcode(product.Barcode);
 
         builder.AddFooter();
 
         string content = builder.GetContent();
 
-        ILabelPrinterService printerService = factory.Create("console");
         printerService.Print(content);
     }
 }
@@ -138,52 +137,53 @@ public class LabelPrinterServiceFactory
 
         }
     }
+}
 
-    public interface ILabelPrinterService
+public interface ILabelPrinterService
+{
+    public void Print(string content);
+}
+
+public class TcpLabelPrinterOptions
+{
+    public IPAddress IpAdress { get; }
+    public int Port { get; }
+
+    public TcpLabelPrinterOptions(IPAddress ipAdress, int port)
     {
-        public void Print(string content);
-    }
-
-    public class TcpLabelPrinterOptions
-    {
-        public IPAddress IpAdress { get; }
-        public int Port { get; }
-
-        public TcpLabelPrinterOptions(IPAddress ipAdress, int port)
-        {
-            IpAdress = ipAdress;
-            Port = port;
-        }
-    }
-
-    public class TcpLabelPrinterService : ILabelPrinterService
-    {
-        private TcpLabelPrinterOptions options;
-
-        public TcpLabelPrinterService(TcpLabelPrinterOptions options)
-        {
-            this.options = options;
-        }
-
-        public void Print(string content)
-        {
-            TcpClient tcpClient = new TcpClient();
-            tcpClient.Connect(options.IpAdress, options.Port);
-
-            var stream = new StreamWriter(tcpClient.GetStream());
-            stream.Write(content);
-            stream.Flush();
-            stream.Close();
-            tcpClient.Close();
-        }
-
-    }
-
-    public class ConsoleLabelPrinterService : ILabelPrinterService
-    {
-        public void Print(string content)
-        {
-            Console.WriteLine(content);
-        }
+        IpAdress = ipAdress;
+        Port = port;
     }
 }
+
+public class TcpLabelPrinterService : ILabelPrinterService
+{
+    private TcpLabelPrinterOptions options;
+
+    public TcpLabelPrinterService(TcpLabelPrinterOptions options)
+    {
+        this.options = options;
+    }
+
+    public void Print(string content)
+    {
+        TcpClient tcpClient = new TcpClient();
+        tcpClient.Connect(options.IpAdress, options.Port);
+
+        var stream = new StreamWriter(tcpClient.GetStream());
+        stream.Write(content);
+        stream.Flush();
+        stream.Close();
+        tcpClient.Close();
+    }
+
+}
+
+public class ConsoleLabelPrinterService : ILabelPrinterService
+{
+    public void Print(string content)
+    {
+        Console.WriteLine(content);
+    }
+}
+

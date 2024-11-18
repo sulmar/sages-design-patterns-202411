@@ -7,7 +7,7 @@ public class PrinterDirectorTests
     public void PrintLabel_ValidLabel_ShouldReturnFormated()
     {
         // Arrange
-        PrinterDirector printerDirector = new PrinterDirector(new ZplCommandBuilder(), new LabelPrinterServiceFactory());
+        PrinterDirector printerDirector = new PrinterDirector(new ZplCommandBuilder(), new ConsoleLabelPrinterService());
 
         // Act
         printerDirector.PrintLabel(new Product { Name = "abc", Barcode = "123" });
