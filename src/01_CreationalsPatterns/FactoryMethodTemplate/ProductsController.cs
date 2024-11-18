@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using FactoryMethodTemplate.Hugo;
 using FactoryMethodTemplate.Razor;
 
 namespace FactoryMethodTemplate

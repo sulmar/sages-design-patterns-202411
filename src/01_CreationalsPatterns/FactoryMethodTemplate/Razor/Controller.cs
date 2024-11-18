@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using FactoryMethodTemplate.Abstractions;
+using System.Collections.Generic;
 
 namespace FactoryMethodTemplate.Razor
 {
@@ -6,10 +7,15 @@ namespace FactoryMethodTemplate.Razor
     {
         public string Render(string viewName, IDictionary<string, object> context)
         {
-            var engine = new RazorViewEngine(); // Problem
+            IViewEngine engine = CreateViewEngine();
             var html = engine.Render(viewName, context);
 
             return html;
+        }
+
+        protected virtual IViewEngine CreateViewEngine()
+        {
+            return new RazorViewEngine();
         }
     }
 }

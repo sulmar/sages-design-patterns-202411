@@ -1,16 +1,16 @@
-﻿using System;
+﻿using FactoryMethodTemplate.Abstractions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FactoryMethodTemplate.Razor
+namespace FactoryMethodTemplate.Razor;
+
+public class RazorViewEngine : IViewEngine
 {
-    public class RazorViewEngine
+    public string Render(string viewName, IDictionary<string, object> context)
     {
-        public string Render(string viewName, IDictionary<string, object> context)
-        {
-            return "View rendered by Razor";
-        }
+        return "View rendered by Razor";
     }
 }
