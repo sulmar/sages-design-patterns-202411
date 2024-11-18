@@ -19,6 +19,7 @@ namespace SimpleFactoryPattern
         private static void VisitCalculateAmountTest()
         {
             VisitFactoryDictionary visitFactory = new VisitFactoryDictionary();
+            ConsoleColorFactory consoleColorFactory = new ConsoleColorFactory();
 
             visitFactory.Register("N", new NfzCalculateCostStrategy());
             visitFactory.Register("P", new PrivateCalculateCostStrategy(new VisitOptions(100)));
@@ -42,13 +43,7 @@ namespace SimpleFactoryPattern
 
                     decimal totalAmount = visit.CalculateCost(duration);
 
-                    if (totalAmount == 0)
-                        Console.ForegroundColor = ConsoleColor.Green;
-                    else
-                       if (totalAmount >= 200)
-                        Console.ForegroundColor = ConsoleColor.Red;
-                    else
-                        Console.ForegroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = consoleColorFactory.Create(totalAmount);
 
                     Console.WriteLine($"Total amount {totalAmount:C2}");
 
