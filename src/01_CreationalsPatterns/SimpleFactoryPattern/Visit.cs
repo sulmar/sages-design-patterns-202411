@@ -6,7 +6,7 @@ namespace SimpleFactoryPattern
     public class VisitFactory
     {
         // Product
-        public Visit Create(string kind, TimeSpan duration, decimal pricePerHour)
+        public IVisit Create(string kind, TimeSpan duration, decimal pricePerHour)
         {
             if (kind == "N")
             {
@@ -35,15 +35,15 @@ namespace SimpleFactoryPattern
     }
 
 
-    public class NfZVisit : Visit
+    public class NfZVisit : IVisit
     {
-        public override decimal CalculateCost()
+        public decimal CalculateCost()
         {
             return 0;
         }
     }
 
-    public class PrivateVisit : Visit
+    public class PrivateVisit : IVisit
     {
         public TimeSpan Duration { get; set; }
         public decimal PricePerHour { get; set; }
@@ -54,7 +54,7 @@ namespace SimpleFactoryPattern
             PricePerHour = pricePerHour;
         }
 
-        public override decimal CalculateCost()
+        public decimal CalculateCost()
         {
             decimal cost;
 
@@ -66,7 +66,7 @@ namespace SimpleFactoryPattern
 
     }
 
-    public class CompanyVisit : Visit
+    public class CompanyVisit : IVisit
     {
         public TimeSpan Duration { get; set; }
         public decimal PricePerHour { get; set; }
@@ -79,7 +79,7 @@ namespace SimpleFactoryPattern
             PricePerHour = pricePerHour;
         }
 
-        public override decimal CalculateCost()
+        public decimal CalculateCost()
         {
             decimal cost = 0;
 
@@ -89,24 +89,16 @@ namespace SimpleFactoryPattern
         }
     }
 
-    public class TeleVisit : Visit
+    public class TeleVisit : IVisit
     {
-        public override decimal CalculateCost()
+        public decimal CalculateCost()
         {
             return 5m;
         }
     }
 
-    public abstract class Visit
+    public interface IVisit
     {
-        public DateTime VisitDate { get; set; }
-
-        public Visit()
-        {
-            VisitDate = DateTime.Now;
-        }
-
-        public abstract decimal CalculateCost();
-
+        decimal CalculateCost();
     }
 }

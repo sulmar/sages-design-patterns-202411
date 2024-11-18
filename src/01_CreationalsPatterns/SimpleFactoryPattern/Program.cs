@@ -27,9 +27,9 @@ namespace SimpleFactoryPattern
                 Console.Write("Podaj czas wizyty w minutach: ");
                 if (double.TryParse(Console.ReadLine(), out double minutes))
                 {
-                    TimeSpan duration = TimeSpan.FromMinutes(minutes);                    
+                    TimeSpan duration = TimeSpan.FromMinutes(minutes);
 
-                    Visit visit = visitFactory.Create(visitType, duration, 100);
+                    IVisit visit = visitFactory.Create(visitType, duration, 100);
 
                     decimal totalAmount = visit.CalculateCost();
 
