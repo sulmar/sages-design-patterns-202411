@@ -51,12 +51,17 @@ namespace PrototypePattern
 
             foreach (InvoiceDetail detail in Details)
             {
-                copyInvoice.Details.Add((InvoiceDetail) detail.Clone());
+                copyInvoice.Details.Add((InvoiceDetail)detail.Clone());
             }
 
             copyInvoice.Paid(TotalAmount);
 
             return copyInvoice;
+        }
+
+        public Invoice CloneAsInvoice()
+        {
+           return (Invoice) this.Clone();
         }
     }
 

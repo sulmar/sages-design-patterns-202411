@@ -22,7 +22,7 @@ namespace PrototypePattern.UnitTests
             invoice.Paid(700);
 
             // Act
-            Invoice invoiceCopy = (Invoice) invoice.Clone();
+            Invoice invoiceCopy = invoice.CloneAsInvoice();
 
             // Assert
             invoiceCopy.Should().NotBeSameAs(invoice);
