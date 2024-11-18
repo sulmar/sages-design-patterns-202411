@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using static BuilderPattern.SalesReportBuilder;
 
 namespace BuilderPattern
 {
@@ -11,6 +12,20 @@ namespace BuilderPattern
         {
             Console.WriteLine("Hello Builder Pattern!");
 
+            // PresentationTest();
+
+
+            //PhoneTest();
+
+            SalesReportTest();
+
+            // PersonTest();
+
+            //  RoomTest();
+        }
+
+        private static void PresentationTest()
+        {
             MoviePresentationBuilder presentationBuilder = new MoviePresentationBuilder();
 
             Presentation presentation = new Presentation(presentationBuilder);
@@ -21,15 +36,6 @@ namespace BuilderPattern
             presentation.Export();
 
             var document = presentationBuilder.GetMovie();
-
-
-            //PhoneTest();
-
-            // SalesReportTest();
-
-            // PersonTest();
-
-            //  RoomTest();
         }
 
         private static void RoomTest()
@@ -60,7 +66,7 @@ namespace BuilderPattern
         private static void PersonTest()
         {
             var person = new Person();
-             
+
             person.Name = "Marcin";
             person.Position = "developer";
             person.AddSkill("C#");
@@ -75,20 +81,18 @@ namespace BuilderPattern
             FakeOrdersService ordersService = new FakeOrdersService();
             IEnumerable<Order> orders = ordersService.Get();
 
-            SalesReport salesReport = new SalesReport();
+            bool hasFooter = true;
 
-            // Header
-            salesReport.Title = "Raport sprzedaży";
-            salesReport.CreateDate = DateTime.Now;
-            salesReport.TotalSalesAmount = orders.Sum(s => s.Amount);
+            SalesReportBuilder builder = new SalesReportBuilder();
+            builder.AddOrders(orders);
 
-            // Content          
-            salesReport.ProductDetails = orders
-                .SelectMany(o => o.Details)
-                .GroupBy(o => o.Product)
-                .Select(g => new ProductReportDetail(g.Key, g.Sum(p => p.Quantity), g.Sum(p => p.LineTotal)));
+            builder.AddHeader("Raport sprzedaży");
+            builder.AddContent();
 
-            // Footer
+            if (hasFooter)
+                builder.AddFooter();
+
+            SalesReport salesReport = builder.Build();
 
             Console.WriteLine(salesReport);
 
@@ -100,7 +104,7 @@ namespace BuilderPattern
             phone.Call("555999123", "555000321", ".NET Design Patterns");
         }
 
-       
+
     }
 
     public class FakeOrdersService
