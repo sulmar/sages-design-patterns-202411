@@ -2,103 +2,132 @@
 
 namespace SimpleFactoryPattern
 {
+    
+    public class VisitOptions
+    {
+        public decimal PricePerHour { get; set; }
+
+        public VisitOptions(decimal pricePerHour)
+        {
+            PricePerHour = pricePerHour;
+        }
+    }
+
+    public class CompanyVisitOptions : VisitOptions
+    {
+        public CompanyVisitOptions(decimal pricePerHour, decimal companyDiscountPercentage) : base(pricePerHour)
+        {
+            CompanyDiscountPercentage = companyDiscountPercentage;
+        }
+
+        public decimal CompanyDiscountPercentage { get; set; }
+
+    }
+
+
     // Fabryka
     public class VisitFactory
     {
         // Product
-        public IVisit Create(string kind, TimeSpan duration, decimal pricePerHour)
+        public ICalculateCostStrategy Create(string kind) => kind switch
         {
-            if (kind == "N")
-            {
-                return new NfZVisit();
-            }
-            else if (kind == "P")
-            {
-                return new PrivateVisit(duration, pricePerHour);
+            "N" => new NfzCalculateCostStrategy(),
+            "P" => new PrivateCalculateCostStrategy(new VisitOptions(100)),
+            "F" => new CompanyCalculateCostStrategy(new CompanyVisitOptions(100, 0.9m)),
+            "T" => throw new NotImplementedException(),
+            _ => throw new NotSupportedException($"{kind} not supported."),
+        };
+    }
 
-            }
-            else if (kind == "F")
-            {
-                return new CompanyVisit(duration, pricePerHour);
-            }
-            else if (kind == "T")
-            {
-                return new TeleVisit();
-            }
-            else
-            {
-                throw new NotSupportedException($"{kind} not supported.");
-            }
+    public class VisitFactoryDictionary
+    {
+        private IDictionary<string, ICalculateCostStrategy> strategies = new  Dictionary<string, ICalculateCostStrategy>();
+
+        public void Register(string kind, ICalculateCostStrategy strategy)
+        {
+            strategies[kind] = strategy;
+        }
+        public ICalculateCostStrategy Create(string kind) => strategies[kind];
+
+    }
 
 
+
+    public class Visit
+    {
+        public DateTime DateVisit { get; set; }
+
+        private ICalculateCostStrategy calculateCostStrategy;
+
+        public void SetStrategy(ICalculateCostStrategy calculateCostStrategy)
+        {
+            this.calculateCostStrategy = calculateCostStrategy;
+        }
+
+        public decimal CalculateCost(TimeSpan duration)
+        {
+            var cost = calculateCostStrategy.CalculateCost(duration);
+
+            return cost;
         }
     }
 
 
-    public class NfZVisit : IVisit
+
+    public interface IVisit
     {
-        public decimal CalculateCost()
+      
+    }
+
+
+    public interface ICalculateCostStrategy
+    {
+        decimal CalculateCost(TimeSpan duration);
+    }
+
+    public class NfzCalculateCostStrategy : ICalculateCostStrategy
+    {
+        public decimal CalculateCost(TimeSpan duration)
         {
             return 0;
         }
     }
 
-    public class PrivateVisit : IVisit
+    public class PrivateCalculateCostStrategy : ICalculateCostStrategy
     {
-        public TimeSpan Duration { get; set; }
-        public decimal PricePerHour { get; set; }
+        public VisitOptions Options { get; set; }
 
-        public PrivateVisit(TimeSpan duration, decimal pricePerHour)
+        public PrivateCalculateCostStrategy(VisitOptions options)
         {
-            Duration = duration;
-            PricePerHour = pricePerHour;
+            Options = options;
         }
 
-        public decimal CalculateCost()
+        public decimal CalculateCost(TimeSpan duration)
         {
             decimal cost;
 
-            cost = (decimal)Duration.TotalHours * PricePerHour;
+            cost = (decimal)duration.TotalHours * Options.PricePerHour;
 
             return cost;
-
         }
-
     }
 
-    public class CompanyVisit : IVisit
+    public class CompanyCalculateCostStrategy : ICalculateCostStrategy
     {
-        public TimeSpan Duration { get; set; }
-        public decimal PricePerHour { get; set; }
+        public CompanyVisitOptions Options { get; set; }        
 
-        private const decimal companyDiscountPercentage = 0.9m;
-
-        public CompanyVisit(TimeSpan duration, decimal pricePerHour)
+        public CompanyCalculateCostStrategy(CompanyVisitOptions options)
         {
-            Duration = duration;
-            PricePerHour = pricePerHour;
+            Options = options;
         }
 
-        public decimal CalculateCost()
+        public decimal CalculateCost(TimeSpan duration)
         {
             decimal cost = 0;
 
-            cost = (decimal)Duration.TotalHours * PricePerHour * companyDiscountPercentage;
+            cost = (decimal)duration.TotalHours * Options.PricePerHour * Options.CompanyDiscountPercentage;
 
             return cost;
         }
-    }
-
-    public class TeleVisit : IVisit
-    {
-        public decimal CalculateCost()
-        {
-            return 5m;
-        }
-    }
-
-    public interface IVisit
-    {
-        decimal CalculateCost();
     }
 }
