@@ -16,17 +16,19 @@ namespace PrototypePattern.UnitTests
             // Arrange
             Customer customer = new Customer("John", "Smith");
             Invoice invoice = new Invoice("FA 1", DateTime.Parse("2022-03-01"), customer);
-            
+            invoice.Details.Add(new InvoiceDetail(new Product("a", 10), 1));
+            invoice.Details.Add(new InvoiceDetail(new Product("b", 5), 2));
+
             invoice.Paid(700);
 
             // Act
-            Invoice invoiceCopy = new Invoice(invoice.Number, invoice.CreateDate, invoice.Customer);
+            Invoice invoiceCopy = (Invoice) invoice.Clone();
 
             // Assert
             invoiceCopy.Should().NotBeSameAs(invoice);
 
             invoiceCopy.Number.Should().Be("FA 1");
-            invoiceCopy.CreateDate.Should().Be(DateTime.Parse("2022-03-01"));
+            invoiceCopy.CreateDate.Should().Be(DateTime.Today);
             invoiceCopy.PaymentStatus.Should().Be(PaymentStatus.Paid);
             
         }
@@ -40,7 +42,7 @@ namespace PrototypePattern.UnitTests
             invoice.Paid(700);
 
             // Act
-            Invoice invoiceCopy = new Invoice(invoice.Number, DateTime.Today, invoice.Customer);
+            Invoice invoiceCopy = (Invoice)invoice.Clone();
 
             // Assert
             invoiceCopy.Customer.Should().BeSameAs(invoice.Customer);
@@ -58,7 +60,7 @@ namespace PrototypePattern.UnitTests
             invoice.Paid(700);
 
             // Act
-            Invoice invoiceCopy = new Invoice(invoice.Number, DateTime.Today, invoice.Customer);
+            Invoice invoiceCopy = (Invoice) invoice.Clone();
 
             // Assert
             
@@ -78,7 +80,7 @@ namespace PrototypePattern.UnitTests
             invoice.Paid(700);
 
             // Act
-            Invoice invoiceCopy = new Invoice(invoice.Number, DateTime.Today, invoice.Customer);
+            Invoice invoiceCopy = (Invoice)invoice.Clone();
 
             // Assert
             var productsReferenceEquals = invoice.Details.Zip(invoiceCopy.Details, (original, copy) => ReferenceEquals(original.Product, copy.Product));
