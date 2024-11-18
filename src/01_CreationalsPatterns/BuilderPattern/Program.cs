@@ -84,10 +84,10 @@ namespace BuilderPattern
             bool hasFooter = true;
 
             SalesReportBuilder builder = new SalesReportBuilder();
-            builder.AddOrders(orders);
-
-            builder.AddHeader("Raport sprzedaży");
-            builder.AddContent();
+            builder
+                .AddOrders(orders)
+                .AddHeader("Raport sprzedaży")
+                .AddContent();          // Łańcuch metod (FluentApi)
 
             if (hasFooter)
                 builder.AddFooter();

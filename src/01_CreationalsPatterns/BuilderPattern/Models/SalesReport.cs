@@ -10,29 +10,35 @@ namespace BuilderPattern
 
         private IEnumerable<Order> orders;
 
-        public void AddOrders(IEnumerable<Order> orders)
+        public SalesReportBuilder AddOrders(IEnumerable<Order> orders)
         {
             this.orders = orders;
+
+            return this;
         }
 
-        public void AddHeader(string title)
+        public SalesReportBuilder AddHeader(string title)
         {
             salesReport.Title = title;
             salesReport.CreateDate = DateTime.Now;
             salesReport.TotalSalesAmount = orders.Sum(s => s.Amount);
+
+            return this;
         }
 
-        public void AddContent()
+        public SalesReportBuilder AddContent()
         {
             salesReport.ProductDetails = orders
                .SelectMany(o => o.Details)
                .GroupBy(o => o.Product)
                .Select(g => new ProductReportDetail(g.Key, g.Sum(p => p.Quantity), g.Sum(p => p.LineTotal)));
+
+            return this;
         }
 
-        public void AddFooter()
+        public SalesReportBuilder AddFooter()
         {
-
+            return this;
         }
 
         public SalesReport Build()
