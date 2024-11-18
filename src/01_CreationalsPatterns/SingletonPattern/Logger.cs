@@ -3,45 +3,37 @@ using System.IO;
 
 namespace SingletonPattern
 {
-    public class ApplicationContext
+    // Szablon singletona
+    public class Singleton<T>
+        where T : class, new()
     {
-        public string LoggedUser { get; set; }
-        public DateTime RunningFrom { get; set; }
+        private static T _instance;
 
-        private static ApplicationContext _instance;
-
-        public static ApplicationContext Instance
-        {
-            get
-            {
-                if ( _instance == null )
-                    _instance = new ApplicationContext();
-
-                return _instance;
-            }
-        }
-
-        protected ApplicationContext() { }
-
-    }
-
-    public class Logger
-    {
-        private readonly string path = "log.txt";
-
-        private static Logger _instance;
-        public static Logger Instance
+        public static T Instance
         {
             get
             {
                 if (_instance == null)
-                    _instance = new Logger();
+                    _instance = new T();
 
                 return _instance;
             }
         }
+    }
 
-        protected Logger() {  }
+    public class ApplicationContext : Singleton<ApplicationContext>
+    {
+        public string LoggedUser { get; set; }
+        public DateTime RunningFrom { get; set; }
+        public ApplicationContext() { }
+
+    }
+
+    public class Logger : Singleton<Logger>
+    {
+        private readonly string path = "log.txt";        
+
+        public Logger() {  }
 
         public void LogInformation(string message)
         {
