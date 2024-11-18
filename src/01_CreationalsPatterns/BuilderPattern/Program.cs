@@ -17,11 +17,11 @@ namespace BuilderPattern
 
             //PhoneTest();
 
-            SalesReportTest();
+            // SalesReportTest();
 
             // PersonTest();
 
-            //  RoomTest();
+            RoomTest();
         }
 
         private static void PresentationTest()
@@ -44,18 +44,27 @@ namespace BuilderPattern
             var roomWidth = 500;
             var roomHeight = 300;
 
-            // Tworzenie ścian
-            var walls = new List<Wall>
-            {
-                new Wall("Red", 200, 250, WallPosition.North),
-                new Wall("Red", 200, 250, WallPosition.South)
-            };
-
             // Tworzenie sufitu
             var ceiling = new Ceiling(roomWidth, roomHeight);
 
+
+            RoomBuilder builder = new RoomBuilder();
+            builder
+                .ConfigureRoom(options =>
+                    {
+                        options.Width = roomWidth;
+                        options.Height = roomHeight;
+                    })
+                .AddWalls(walls =>
+                    {
+                        walls.Color = "Red";
+                        walls.Width = 200;
+                        walls.Height = 250;
+                        walls.Position = WallPosition.North | WallPosition.South;
+                    });
+
             // Tworzenie pokoju
-            var room = new Room(roomWidth, roomHeight, walls, ceiling);
+            var room = builder.Build();
 
 
             // Wyświetlenie pokoju
@@ -85,7 +94,7 @@ namespace BuilderPattern
 
             SalesReportBuilder builder = new SalesReportBuilder();
             builder
-                .AddOrders(orders)
+                .WithOrders(orders)
                 .AddHeader("Raport sprzedaży")
                 .AddContent();          // Łańcuch metod (FluentApi)
 

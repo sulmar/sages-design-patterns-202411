@@ -1,7 +1,55 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace BuilderPattern;
+
+public class RoomOptions
+{
+    public int Width { get; set; }
+    public int Height { get; set; }
+}
+
+public class WallOptions
+{
+    public string Color { get; set; }
+    public int Width { get; set; }
+    public int Height { get; set; }
+    public WallPosition Position { get; set; }
+}
+
+public class RoomBuilder
+{
+    private RoomOptions _roomOptions = new RoomOptions();
+    private WallOptions _wallOptions = new WallOptions();
+
+    private Room room = new Room();
+
+    public RoomBuilder ConfigureRoom(Action<RoomOptions> configureRoomOptions)
+    {
+        configureRoomOptions(_roomOptions);
+
+        return this;
+
+    }
+
+    public RoomBuilder AddWalls(Action<WallOptions> configureWallOptions)
+    {
+        configureWallOptions(_wallOptions);
+
+        return this;
+    }
+
+    public void AddCeiling()
+    {
+
+    }
+
+    public Room Build()
+    {
+        return room;    
+    }
+}
 
 public class Room
 {
@@ -10,13 +58,13 @@ public class Room
     public List<Wall> Walls { get; private set; }
     public Ceiling Ceiling { get; private set; }
     
-    public Room(int width, int height, List<Wall> walls, Ceiling ceiling)
-    {
-        Width = width;
-        Height = height;
-        Walls = walls;
-        Ceiling = ceiling;        
-    }
+    //public Room(int width, int height, List<Wall> walls, Ceiling ceiling)
+    //{
+    //    Width = width;
+    //    Height = height;
+    //    Walls = walls;
+    //    Ceiling = ceiling;        
+    //}
 
     public override string ToString()
     {
