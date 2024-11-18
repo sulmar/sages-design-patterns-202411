@@ -11,13 +11,25 @@ namespace BuilderPattern
         {
             Console.WriteLine("Hello Builder Pattern!");
 
+            MoviePresentationBuilder presentationBuilder = new MoviePresentationBuilder();
+
+            Presentation presentation = new Presentation(presentationBuilder);
+            presentation.AddSlide(new Slide("a"));
+            presentation.AddSlide(new Slide("b"));
+            presentation.AddSlide(new Slide("c"));
+
+            presentation.Export();
+
+            var document = presentationBuilder.GetMovie();
+
+
             //PhoneTest();
 
-           // SalesReportTest();
+            // SalesReportTest();
 
             // PersonTest();
 
-            RoomTest();
+            //  RoomTest();
         }
 
         private static void RoomTest()
