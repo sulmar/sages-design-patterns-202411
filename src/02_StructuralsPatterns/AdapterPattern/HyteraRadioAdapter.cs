@@ -44,7 +44,7 @@ namespace AdapterPattern
     }
 
     // Concrete Adapter (wariant klasowy)
-    class HyteraRadioClassAdapter : HyteraRadio, IRadioAdapter
+    class HyteraRadioClassAdapter : HyteraRadio, ITextRadioAdapter
     {
         public void Send(string message, byte channel)
         {
@@ -52,14 +52,18 @@ namespace AdapterPattern
             SendMessage(channel, message);
             Release();
         }
+
+        public void Send(byte[] data, byte channel)
+        {
+            throw new NotSupportedException();
+        }
     }
 
     // Concrete Adapter (wariant obiektowy)
-    class HyteraRadioAdapter : IRadioAdapter
+    class HyteraRadioAdapter : ITextRadioAdapter
     {
         // Adaptee
         private HyteraRadio radio;
-
 
         public HyteraRadioAdapter()
         {
@@ -76,7 +80,7 @@ namespace AdapterPattern
 
     public class RadioAdapterFactory
     {
-        public IRadioAdapter Create(string model)
+        public ITextRadioAdapter Create(string model)
         {
             switch (model)
             {

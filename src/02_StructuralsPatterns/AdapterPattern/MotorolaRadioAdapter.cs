@@ -1,7 +1,9 @@
-﻿namespace AdapterPattern
+﻿using System.Text;
+
+namespace AdapterPattern
 {
     // Concrete Adapter
-    public class MotorolaRadioAdapter : IRadioAdapter
+    public class MotorolaRadioAdapter : ITextRadioAdapter, IBinaryRadioAdapter
     {
         private readonly string pincode;
 
@@ -20,6 +22,13 @@
             radio.SelectChannel(channel);
             radio.Send(message);
             radio.PowerOff();
+        }
+
+        public void Send(byte[] data, byte channel)
+        {
+            radio.PowerOn(pincode);
+            radio.SelectChannel(channel);
+            radio.Send(Encoding.UTF8.GetString(data));
         }
     }
 }
