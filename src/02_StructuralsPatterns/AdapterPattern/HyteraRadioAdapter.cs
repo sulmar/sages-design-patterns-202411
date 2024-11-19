@@ -1,7 +1,61 @@
-﻿namespace AdapterPattern
+﻿using System;
+
+namespace AdapterPattern
 {
-    // Concrete Adapter
-    partial class HyteraRadioAdapter : IRadioAdapter
+    public sealed class UnmanagedDllLibrary
+    {
+        public void Print()
+        {
+
+        }
+
+        public void Release()
+        {
+
+        }
+    }
+
+    public interface IPrinterAdapter
+    {
+        void Print();
+    }
+
+    public class DllLibraryPrinterAdapter : IPrinterAdapter, IDisposable
+    {
+        // Adaptee
+        private UnmanagedDllLibrary dll;
+
+        public DllLibraryPrinterAdapter()
+        {
+            dll = new UnmanagedDllLibrary();
+        }
+
+        public void Print()
+        {
+            dll.Print();
+        }
+
+        public void Dispose()
+        {
+            dll.Release();
+        }
+
+
+    }
+
+    // Concrete Adapter (wariant klasowy)
+    class HyteraRadioClassAdapter : HyteraRadio, IRadioAdapter
+    {
+        public void Send(string message, byte channel)
+        {
+            Init();
+            SendMessage(channel, message);
+            Release();
+        }
+    }
+
+    // Concrete Adapter (wariant obiektowy)
+    class HyteraRadioAdapter : IRadioAdapter
     {
         // Adaptee
         private HyteraRadio radio;
