@@ -3,7 +3,7 @@
 namespace AdapterPattern
 {
 
-    public sealed class HyteraRadio
+    public class HyteraRadio
     {
 
         private RadioStatus status;
