@@ -8,7 +8,7 @@
             StandardTransferBankPayment payment = new StandardTransferBankPayment();
 
             // Act
-            payment.MakeTransfer();
+            payment.MakeTransfer(1);
 
             // Assert
 
@@ -23,7 +23,7 @@
             StandardTransferBlik payment = new StandardTransferBlik();
 
             // Act
-            payment.MakeTransfer();
+            payment.MakeTransfer(1);
 
             // Assert
 
@@ -38,7 +38,7 @@
             StandardTransferCreditCard payment = new StandardTransferCreditCard();
 
             // Act
-            payment.MakeTransfer();
+            payment.MakeTransfer(1);
 
             // Assert
 
@@ -53,7 +53,7 @@
             TaxTransferBankPayment payment = new TaxTransferBankPayment();
 
             // Act
-            payment.MakeTransfer();
+            payment.MakeTransfer(1);
 
             // Assert
 
@@ -68,7 +68,7 @@
             TaxTransferBlik payment = new TaxTransferBlik();
 
             // Act
-            payment.MakeTransfer();
+            payment.MakeTransfer(1);
 
             // Assert
 
@@ -83,7 +83,7 @@
             TaxTransferCreditCard payment = new TaxTransferCreditCard();
 
             // Act
-            payment.MakeTransfer();
+            payment.MakeTransfer(1);
 
             // Assert
 
@@ -98,7 +98,7 @@
             HealthInsuranceTransferBankPayment payment = new HealthInsuranceTransferBankPayment();
 
             // Act
-            payment.MakeTransfer();
+            payment.MakeTransfer(1);
 
             // Assert
 
@@ -113,7 +113,7 @@
             HealthInsuranceTransferBlik payment = new HealthInsuranceTransferBlik();
 
             // Act
-            payment.MakeTransfer();
+            payment.MakeTransfer(1);
 
             // Assert
 
@@ -128,7 +128,7 @@
             HealthInsuranceTransferCreditCard payment = new HealthInsuranceTransferCreditCard();
 
             // Act
-            payment.MakeTransfer();
+            payment.MakeTransfer(1);
 
             // Assert
 
