@@ -1,5 +1,6 @@
 ﻿using NGeoHash;
 using System;
+using System.Threading;
 
 namespace AdapterPattern
 {
@@ -18,16 +19,15 @@ namespace AdapterPattern
         {
             RadioAdapterFactory radioAdapterFactory = new RadioAdapterFactory();
             ITextRadioAdapter radio = radioAdapterFactory.Create("motorola");
+
             radio.Send("Hello World!", 10);
 
-            IBinaryRadioAdapter binaryRadioAdapter = radio as IBinaryRadioAdapter;
-
-            if (binaryRadioAdapter != null)
+            if (radio is IBinaryRadioAdapter binaryRadioAdapter)
             {
                 byte[] data = new byte[] { 1, 2, 3, 4, 5 };
                 binaryRadioAdapter.Send(data, 10);
             }
-           
+
         }
 
     }
