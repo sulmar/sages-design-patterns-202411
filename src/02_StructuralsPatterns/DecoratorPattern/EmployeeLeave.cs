@@ -1,47 +1,100 @@
-﻿namespace DecoratorPattern;
+﻿using System;
+using System.IO;
+using System.Threading;
+
+namespace DecoratorPattern;
 
 
-
-// Urlop pracowniczy
-public class EmployeeLeave
+public interface ILeaveCalculator
 {
-    public int BaseLeaveDays { get; private set; }
-    public int SeniorityYears { get; private set; }
-    public bool HasCompletedTraining { get; private set; }
-    public bool HasSpecialBenefits { get; private set; }
+    int CalculateLeaveDays();
+}
 
-    public EmployeeLeave(int baseLeaveDays, int seniorityYears, bool hasCompletedTraining, bool hasSpecialBenefits)
+public class BaseLeave : ILeaveCalculator
+{
+    private int _baseLeaveDays;
+
+    public BaseLeave(int baseLeaveDays)
     {
-        BaseLeaveDays = baseLeaveDays;
-        SeniorityYears = seniorityYears;
-        HasCompletedTraining = hasCompletedTraining;
-        HasSpecialBenefits = hasSpecialBenefits;
+        _baseLeaveDays = baseLeaveDays;
     }
 
-    // Oblicza ilość dni urlopu
     public int CalculateLeaveDays()
     {
-        int totalLeaveDays = BaseLeaveDays;
+        return _baseLeaveDays;
+    }
+}
 
-        // Dodanie dni za staż pracy
-        if (SeniorityYears >= 5)
-        {
-            totalLeaveDays += 5;
-        }
+// Abstract Decorator
+public abstract class LeaveDecorator : ILeaveCalculator
+{
+    protected ILeaveCalculator leaveCalculator;
 
-        // Dodanie dni za ukończone szkolenia
-        if (HasCompletedTraining)
-        {
-            totalLeaveDays += 3;
-        }
-
-        // Dodanie dni za specjalne świadczenia
-        if (HasSpecialBenefits)
-        {
-            totalLeaveDays += 2;
-        }
-
-        return totalLeaveDays;
+    protected LeaveDecorator(ILeaveCalculator leaveCalculator)
+    {
+        this.leaveCalculator = leaveCalculator;
     }
 
+    public abstract int CalculateLeaveDays();
 }
+
+// Concrete Decorator A
+public class SeniorityLeaveDecorator : LeaveDecorator
+{
+    public int _seniorityYears;
+
+    public SeniorityLeaveDecorator(ILeaveCalculator leaveCalculator, int seniorityYears) : base(leaveCalculator)
+    {
+        _seniorityYears = seniorityYears;   
+    }
+
+    public override int CalculateLeaveDays()
+    {
+        // Dodanie dni za staż pracy
+        int extraLeave = _seniorityYears >= 5 ? 5 : 0;
+
+        return leaveCalculator.CalculateLeaveDays() + extraLeave;
+    }
+}
+
+
+// Concrete Decorator B
+public class CompletedTrainingLeaveDecorator : LeaveDecorator
+{
+    private bool _hasCompletedTraining;
+
+    public CompletedTrainingLeaveDecorator(ILeaveCalculator leaveCalculator, bool hasCompletedTraining) : base(leaveCalculator)
+    {
+        _hasCompletedTraining = hasCompletedTraining;
+    }
+
+    public override int CalculateLeaveDays()
+    {
+        // Dodanie dni za ukończone szkolenia
+        int extraLeave = _hasCompletedTraining ? 3 : 0;
+
+        return leaveCalculator.CalculateLeaveDays() + extraLeave;
+    }
+}
+
+// Concrete Decorator C
+public class SpecialBenefitsLeaveDecorator : LeaveDecorator
+{
+    public bool _hasSpecialBenefits;
+
+    public SpecialBenefitsLeaveDecorator(ILeaveCalculator leaveCalculator, bool hasSpecialBenefits) : base(leaveCalculator)
+    {
+        _hasSpecialBenefits = hasSpecialBenefits;
+    }
+
+    public override int CalculateLeaveDays()
+    {
+        // Dodanie dni za specjalne świadczenia
+        int extraLeave = _hasSpecialBenefits ? 2 : 0;
+
+        return leaveCalculator.CalculateLeaveDays() + extraLeave;
+    }
+}
+
+
+

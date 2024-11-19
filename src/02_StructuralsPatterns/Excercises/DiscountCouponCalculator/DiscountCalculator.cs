@@ -18,7 +18,6 @@ public class DiscountCalculator
             throw new ArgumentOutOfRangeException();
 
         // Strategia
-
         IDiscountStrategy discountStrategy = factory.Create(discountCode);
 
         return discountStrategy.CalculatePrice(price);

@@ -4,12 +4,11 @@ namespace DecoratorPattern.UnitTests;
 
 public class EmployeeLeaveTests
 {
-
     [Fact]
     public void CalculateLeaveDays_WhenNoAdditionalConditions_ShouldReturnBaseLeave()
     {
         // Arrange
-        var employeeLeave = new EmployeeLeave(baseLeaveDays: 20, seniorityYears: 2, hasCompletedTraining: false, hasSpecialBenefits: false);
+        ILeaveCalculator employeeLeave = new BaseLeave(baseLeaveDays: 20);
 
         // Act
         int result = employeeLeave.CalculateLeaveDays();
@@ -22,7 +21,8 @@ public class EmployeeLeaveTests
     public void CalculateLeaveDays_ForSeniorityOf5OrMoreYears_ShouldAdd5Days()
     {
         // Arrange
-        var employeeLeave = new EmployeeLeave(baseLeaveDays: 20, seniorityYears: 5, hasCompletedTraining: false, hasSpecialBenefits: false);
+        ILeaveCalculator employeeLeave = new SeniorityLeaveDecorator(
+                                        new BaseLeave(baseLeaveDays: 20), seniorityYears: 5);
 
         // Act
         int result = employeeLeave.CalculateLeaveDays();
@@ -35,7 +35,7 @@ public class EmployeeLeaveTests
     public void CalculateLeaveDays_ForCompletedTraining_ShouldAdd3Days()
     {
         // Arrange
-        var employeeLeave = new EmployeeLeave(baseLeaveDays: 20, seniorityYears: 2, hasCompletedTraining: true, hasSpecialBenefits: false);
+        ILeaveCalculator employeeLeave = new CompletedTrainingLeaveDecorator(new BaseLeave(baseLeaveDays: 20), hasCompletedTraining: true);
 
         // Act
         int result = employeeLeave.CalculateLeaveDays();
@@ -48,7 +48,7 @@ public class EmployeeLeaveTests
     public void CalculateLeaveDays_ForSpecialBenefits_ShouldAdd2Days()
     {
         // Arrange
-        var employeeLeave = new EmployeeLeave(baseLeaveDays: 20, seniorityYears: 2, hasCompletedTraining: false, hasSpecialBenefits: true);
+        ILeaveCalculator employeeLeave = new SpecialBenefitsLeaveDecorator( new BaseLeave(baseLeaveDays: 20), hasSpecialBenefits: true);
 
         // Act
         int result = employeeLeave.CalculateLeaveDays();
@@ -61,7 +61,10 @@ public class EmployeeLeaveTests
     public void CalculateLeaveDays_ForAllConditionsMet_ShouldReturn30()
     {
         // Arrange
-        var employeeLeave = new EmployeeLeave(baseLeaveDays: 20, seniorityYears: 5, hasCompletedTraining: true, hasSpecialBenefits: true);
+        ILeaveCalculator employeeLeave = new SpecialBenefitsLeaveDecorator( 
+                                        new CompletedTrainingLeaveDecorator( 
+                                            new SeniorityLeaveDecorator( 
+                                                new BaseLeave(baseLeaveDays: 20), seniorityYears: 5), hasCompletedTraining: true), hasSpecialBenefits: true);
 
         // Act
         int result = employeeLeave.CalculateLeaveDays();
@@ -79,7 +82,11 @@ public class EmployeeLeaveTests
     public void CalculateLeaveDays_ShouldReturnExpectedDays(int baseDays, int seniority, bool training, bool benefits, int expected)
     {
         // Arrange
-        var employeeLeave = new EmployeeLeave(baseDays, seniority, training, benefits);
+        ILeaveCalculator employeeLeave = new SpecialBenefitsLeaveDecorator(
+                                      new CompletedTrainingLeaveDecorator(
+                                          new SeniorityLeaveDecorator(
+                                              new BaseLeave(baseLeaveDays: baseDays), seniorityYears: seniority), hasCompletedTraining: training), hasSpecialBenefits: benefits);
+
 
         // Act
         int result = employeeLeave.CalculateLeaveDays();
