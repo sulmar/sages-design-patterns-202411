@@ -1,15 +1,15 @@
-﻿using System.Net.Http.Headers;
+﻿using System.Diagnostics;
+using System.Net.Http.Headers;
 
 namespace DiscountCouponCalculator;
 
 public class DiscountCalculator
 {
-    private readonly HashSet<string> discountCoupons = new();
+    private readonly IDiscountStrategyFactory factory;
 
-    public DiscountCalculator()
+    public DiscountCalculator(IDiscountStrategyFactory factory)
     {
-        discountCoupons.Add("ABC");
-        discountCoupons.Add("XYZ");
+        this.factory = factory;
     }
 
     public decimal CalculateDiscount(decimal price, string discountCode)
@@ -17,31 +17,11 @@ public class DiscountCalculator
         if (price < 0)
             throw new ArgumentOutOfRangeException();
 
-        if (string.IsNullOrEmpty(discountCode))
-            return price;
+        // Strategia
 
-        if (discountCode == "SAVE10NOW")
-        {
-            return price * 0.9m;
-        }
-        else if (discountCode == "DISCOUNT20OFF")
-        {
-            return price * 0.8m;
-        }
+        IDiscountStrategy discountStrategy = factory.Create(discountCode);
 
-        else if (discountCoupons.Contains(discountCode))
-        {
-            discountCoupons.Remove(discountCode);   
+        return discountStrategy.CalculatePrice(price);
 
-            return price * 0.5m;
-        }
-
-        else
-        {
-            throw new ArgumentException("Invalid discount code");
-        }
-
-
-        return price;
     }
 }

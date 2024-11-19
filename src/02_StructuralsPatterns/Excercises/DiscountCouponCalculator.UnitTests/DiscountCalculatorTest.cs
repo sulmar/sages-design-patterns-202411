@@ -2,12 +2,19 @@ namespace DiscountCouponCalculator.UnitTests;
 
 public class DiscountCalculatorTest
 {
+    DiscountCalculator calculator;
+    DiscountStrategyFactoryProxy factory;
+
+    public DiscountCalculatorTest()
+    {
+        factory = new DiscountStrategyFactoryProxy(new DiscountStrategyFactory());
+        calculator = new DiscountCalculator(factory);
+    }
 
     [Fact]
     public void CalculateDiscount_EmptyCoupon_ShouldReturnOriginalPrice()
     {
-        // Arrange
-        DiscountCalculator calculator = new DiscountCalculator();
+        // Arrange        
 
         // Act
         var result = calculator.CalculateDiscount(1, string.Empty);
@@ -20,7 +27,6 @@ public class DiscountCalculatorTest
     public void CalculateDiscount_SAVE10NOW_ShouldReturnDiscountedPrice()
     {
         // Arrange
-        DiscountCalculator calculator = new DiscountCalculator();
 
         // Act
         var result = calculator.CalculateDiscount(1, "SAVE10NOW");
@@ -33,7 +39,6 @@ public class DiscountCalculatorTest
     public void CalculateDiscount_DISCOUNT20OFF_ShouldReturnDiscountedPrice()
     {
         // Arrange
-        DiscountCalculator calculator = new DiscountCalculator();
 
         // Act
         var result = calculator.CalculateDiscount(1, "DISCOUNT20OFF");
@@ -46,7 +51,6 @@ public class DiscountCalculatorTest
     public void CalculateDiscount_NegativePrice_ShouldThrowArgumentOutOfRangeException()
     {
         // Arrange
-        DiscountCalculator calculator = new DiscountCalculator();
 
         // Act
         Action act = () => calculator.CalculateDiscount(-1, string.Empty);
@@ -60,7 +64,7 @@ public class DiscountCalculatorTest
     public void CalculateDiscount_InvalidCoupon_ShouldReturnOriginalPrice()
     {
         // Arrange
-        DiscountCalculator calculator = new DiscountCalculator();
+        factory.AddDiscountCoupon("ABC");
 
         // Act
         Action act = () => calculator.CalculateDiscount(1, "a");
@@ -73,7 +77,7 @@ public class DiscountCalculatorTest
     public void CalculateDiscount_OnceCoupon_ShouldReturnDiscountedPrice()
     {
         // Arrange
-        DiscountCalculator calculator = new DiscountCalculator();
+        factory.AddDiscountCoupon("ABC");
 
         // Act
         var result = calculator.CalculateDiscount(1, "ABC");
@@ -86,7 +90,7 @@ public class DiscountCalculatorTest
     public void CalculateDiscount_TwiceCoupon_ShouldReturnDiscountedPrice()
     {
         // Arrange
-        DiscountCalculator calculator = new DiscountCalculator();
+        factory.AddDiscountCoupon("ABC");
         calculator.CalculateDiscount(1, "ABC");
 
         // Act
@@ -94,6 +98,18 @@ public class DiscountCalculatorTest
 
         // Assert
         Assert.Throws<ArgumentException>(act);
+    }
+
+    [Fact]
+    public void CalculateDiscount_GET5_ShouldReturnDiscountedPrice()
+    {
+        // Arrange
+
+        // Act
+        var result = calculator.CalculateDiscount(10, "GET5");
+
+        // Assert
+        Assert.Equal(5m, result);
     }
 
 }
