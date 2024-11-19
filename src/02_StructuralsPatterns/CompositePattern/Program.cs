@@ -37,14 +37,19 @@ class Program
 
     private static void FormTest()
     {
+        IQuestion questionDP = new Decision("Welcome on Design Pattern in C# Course!");
+        IQuestion questionNotDP = new Decision("The Course is not for you.");        
+
+        Question questionDeveloper = new Question("Are you developer?");
+        Question questionCsharp = new Question("Do you know C#?");
         IQuestion questionNotDeveloper = new Decision("Have a nice day.");
 
-        IQuestion questionDP = new Decision("Welcome on Design Pattern in C# Course!");
-        IQuestion questionNotDP = new Decision("The Course is not for you.");
+        questionDeveloper.AddPositiveAction(questionCsharp);
+        questionDeveloper.AddNegativeAction(questionNotDeveloper);
 
-        IQuestion questionCsharp = new Question("Do you know C#?", questionDP, questionNotDP);
-        IQuestion questionDeveloper = new Question("Are you developer?", questionCsharp, questionNotDeveloper);
-
+        questionCsharp.AddPositiveAction(questionDP);
+        questionCsharp.AddNegativeAction(questionNotDP);
+        
         questionDeveloper.Ask();
 
     }

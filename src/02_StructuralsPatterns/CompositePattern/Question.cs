@@ -1,5 +1,21 @@
 ﻿namespace CompositePattern;
 
+
+public class QuestionBuilder
+{
+    private readonly IQuestion question; 
+
+    public QuestionBuilder(string prompt)
+    {
+        question = new Question(prompt);
+    }
+
+    public QuestionBuilder AddPositiveAction(IQuestion positiveAction)
+    {
+        question..PositiveAction = positiveAction;
+    }
+}
+
 interface IQuestion
 {
     void Ask();
@@ -13,12 +29,22 @@ class Question : IQuestion
     private IQuestion _positiveAction;
     private IQuestion _negativeAction;
 
-    public Question(string prompt, IQuestion positiveAction, IQuestion negativeAction)
+  
+    public Question(string prompt)
     {
         Prompt = prompt;
+    }
+
+    public void AddPositiveAction(IQuestion positiveAction)
+    {
         _positiveAction = positiveAction;
+    }
+
+    public void AddNegativeAction(IQuestion negativeAction)
+    {
         _negativeAction = negativeAction;
     }
+
 
     public void Ask()
     {
