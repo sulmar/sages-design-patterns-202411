@@ -5,13 +5,19 @@ using System.Linq;
 
 namespace ProxyPattern
 {
-    public class CacheProductRepository
+    // Proxy (Pośrednik)
+    public class CacheProductRepository : IProductRepository
     {
+        // Real Subject
+        private IProductRepository _repository;
+
         private IDictionary<int, Product> products;
 
-        public CacheProductRepository()
+        public CacheProductRepository(IProductRepository productRepository)
         {
             products = new Dictionary<int, Product>();
+
+            _repository = productRepository;
         }
 
         public void Add(Product product)
@@ -28,9 +34,18 @@ namespace ProxyPattern
                 return product;
             }
             else
-                return null;            
+            {
+                product = _repository.Get(id); // Użycie RealSubject
+
+                if (product != null)
+                {
+                    Add(product);
+                }
+
+                return product;
+            }
+
         }
 
     }
-
 }

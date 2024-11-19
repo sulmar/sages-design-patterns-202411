@@ -10,9 +10,7 @@ namespace ProxyPattern.UnitTests
         [TestInitialize]
         public void Init()
         {
-            productsController = new ProductsController(
-                   new DbProductRepository(),
-               new CacheProductRepository());
+            productsController = new ProductsController(new CacheProductRepository( new DbProductRepository()));
         }
 
         [TestMethod]
@@ -35,10 +33,9 @@ namespace ProxyPattern.UnitTests
         {
             // Arrange
             int productId = 1;
+            productsController.Get(productId);
 
             // Act
-            productsController.Get(productId);
-            
             var request = productsController.Get(productId);
 
             // Assert
@@ -53,12 +50,11 @@ namespace ProxyPattern.UnitTests
         {
             // Arrange
             int productId = 1;
+            productsController.Get(productId);
+            productsController.Get(productId);
+            productsController.Get(productId);
 
             // Act
-            productsController.Get(productId);
-            productsController.Get(productId);
-            productsController.Get(productId);
-
             var request = productsController.Get(productId);
 
             // Assert
