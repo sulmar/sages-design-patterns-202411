@@ -2,12 +2,19 @@
 
 namespace BridgePattern;
 
-public class TaxTransferBlik
+// Refined Abstraction (Udoskonalona Abstrakcja)
+public class TaxTransfer : Transfer
 {
-    public void MakeTransfer(decimal amount)
+    public TaxTransfer(IAuthorizationMethod authorizationMethod) : base(authorizationMethod)
     {
-        Console.WriteLine("Autoryzacja za pomocą kodu BLIK");
+    }
+
+    public override void MakeTransfer(decimal amount)
+    {
+        authorizationMethod.Authorize();
 
         Console.WriteLine($"Przelew podatkowy {amount}");
+
+        Console.WriteLine("Wysłanie do US");
     }
 }
