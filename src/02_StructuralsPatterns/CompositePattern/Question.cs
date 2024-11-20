@@ -5,15 +5,6 @@ public class QuestionBuilder
 {
     private readonly IQuestion question; 
 
-    public QuestionBuilder(string prompt)
-    {
-        question = new Question(prompt);
-    }
-
-    public QuestionBuilder AddPositiveAction(IQuestion positiveAction)
-    {
-        question..PositiveAction = positiveAction;
-    }
 }
 
 interface IQuestion
