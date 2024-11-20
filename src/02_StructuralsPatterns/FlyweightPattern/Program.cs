@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Net.Http.Headers;
 
 namespace FlyweightPattern
 {
@@ -11,13 +12,29 @@ namespace FlyweightPattern
         static void Main(string[] args)
         {
             Console.WriteLine("Hello Flyweight Pattern!");
-            
-            
+
+            SensorTest();
 
             // Game game = new Game(TreeFactory.Create());
             //
             // game.Play();
         }
+
+
+        private static void SensorTest()
+        {
+            SensorFactory factory = new SensorFactory();
+
+            SensorLocation tempSensor1 = new SensorLocation(factory.GetSensor("Temperatura", "T100", "SensTech"), "Sala szkoleniowa", 1);
+            SensorLocation tempSensor2 = new SensorLocation(factory.GetSensor("Temperatura", "T100", "SensTech"), "Serwerownia", 2);
+            SensorLocation humiditySensor1 = new SensorLocation(factory.GetSensor("Wilgotność", "H200", "HumTech"), "Sala szkoleniowa", 1);            
+
+            tempSensor1.DisplaySensorData();
+            humiditySensor1.DisplaySensorData();
+            tempSensor2.DisplaySensorData();
+
+        }
+
     }
 
     public class TreeFactory
