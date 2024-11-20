@@ -1,13 +1,31 @@
+using System.ComponentModel;
+
 namespace CompositePattern;
 
 class Program
 {
     static void Main(string[] args)
     {
+        LoggerTest();
+
         // FormTest();
 
 
 
+    }
+
+    private static void LoggerTest()
+    {
+        IEnumerable<ILogger> loggers = new ILogger[]
+        {
+         new SqlLogger("server=abc"),
+         new WindowsEventLogLogger(source: "My app"),
+         new FileLogger(directory: "c:\\logs")
+        };
+
+        var component = new Component(loggers);
+
+        component.DoSomething();
     }
 
     private static void FormTest()

@@ -48,11 +48,11 @@ public class FileLogger : ILogger
 }
 
 
-public class Loggers
+public class Component
 {
     private readonly IEnumerable<ILogger> loggers;
 
-    public Loggers(IEnumerable<ILogger> loggers)
+    public Component(IEnumerable<ILogger> loggers)
     {
         this.loggers = loggers;
     }
