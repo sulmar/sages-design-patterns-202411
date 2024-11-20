@@ -4,9 +4,13 @@ namespace StrategyPattern;
 
 // Abstract Strategy
 public interface IDiscountStrategy
+{    
+    decimal Discount(decimal price);
+}
+
+public interface ICanDiscountStrategy
 {
     bool CanDiscount(DateTime dateTime);
-    decimal Discount(decimal price);
 }
 
 public abstract class DelegateDiscountStrategy : IDiscountStrategy
@@ -34,30 +38,46 @@ public class HappyHoursDelegateDiscountStrategy : DelegateDiscountStrategy, IDis
     }
 }
 
-public class HappyHoursDiscountStrategy(TimeSpan from, TimeSpan to, decimal percentage = 0.10m) : IDiscountStrategy
-{
-    public bool CanDiscount(DateTime OrderDate) => OrderDate.TimeOfDay >= from && OrderDate.TimeOfDay <= to;
+public class PercentageDiscountStrategy(decimal percentage = 0.10m) : IDiscountStrategy
+{   
     public decimal Discount(decimal price) => price * percentage;
 }
 
-public class BlackFridayDiscountStrategy(DateTime specialDate, decimal percentage = 0.20m) : IDiscountStrategy
+public class FixedDiscountStrategy(decimal amount) : IDiscountStrategy
 {
-    public bool CanDiscount(DateTime OrderDate) => OrderDate == specialDate;
-    public decimal Discount(decimal price) => price * percentage; // 20% zniżki
+    public decimal Discount(decimal price) => amount;
 }
 
 public class NoDiscountStrategy : IDiscountStrategy
 {
-    public bool CanDiscount(DateTime dateTime) => true;
     public decimal Discount(decimal price) => 0;
 }
 
+public class AlwaysCanDiscountStrategy : ICanDiscountStrategy
+{
+    public bool CanDiscount(DateTime dateTime) => true;
+}
+
+public class HappyHoursCanDiscountStrategy(TimeSpan from, TimeSpan to) : ICanDiscountStrategy
+{
+    public bool CanDiscount(DateTime OrderDate) => OrderDate.TimeOfDay >= from && OrderDate.TimeOfDay <= to;    
+}
+
+public class BlackFridayCanDiscountStrategy(DateTime specialDate) : ICanDiscountStrategy
+{
+    public bool CanDiscount(DateTime OrderDate) => OrderDate == specialDate;    
+}
+
+
+
+// Most
 public class ShoppingCart
 {
     private decimal _price;
 
     public DateTime OrderDate { get; set; }
 
+    public ICanDiscountStrategy CanDiscountStrategy { get; set; }
     public IDiscountStrategy DiscountStrategy { get; set; }
 
 
@@ -65,13 +85,14 @@ public class ShoppingCart
     {
         _price = price;
 
+        CanDiscountStrategy = new AlwaysCanDiscountStrategy();
         DiscountStrategy = new NoDiscountStrategy();
     }
 
     // Obliczanie ceny na podstawie zniżki
     public decimal CalculateTotalPrice()
     {
-        if (DiscountStrategy.CanDiscount(OrderDate))
+        if (CanDiscountStrategy.CanDiscount(OrderDate))
         {
             return _price - DiscountStrategy.Discount(_price);
         }

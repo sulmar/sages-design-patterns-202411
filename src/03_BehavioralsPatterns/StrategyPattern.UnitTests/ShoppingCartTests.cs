@@ -22,7 +22,8 @@ public class ShoppingCartTests
             OrderDate = orderDate
         };
 
-        cart.DiscountStrategy = new HappyHoursDiscountStrategy(from, to);
+        cart.CanDiscountStrategy = new HappyHoursCanDiscountStrategy(from, to);
+        cart.DiscountStrategy = new PercentageDiscountStrategy(0.1m);
 
         // Act
         decimal result = cart.CalculateTotalPrice();
@@ -38,8 +39,6 @@ public class ShoppingCartTests
         decimal price, string specialDate, string orderDate, decimal expectedPrice)
     {
         // Arrange
-        TimeSpan from = TimeSpan.Zero; // Irrelevant for Black Friday
-        TimeSpan to = TimeSpan.Zero;   // Irrelevant for Black Friday
         DateTime blackFriday = DateTime.Parse(specialDate);
         DateTime order = DateTime.Parse(orderDate);
 
@@ -48,7 +47,8 @@ public class ShoppingCartTests
             OrderDate = order
         };
 
-        cart.DiscountStrategy = new BlackFridayDiscountStrategy(blackFriday);
+        cart.CanDiscountStrategy = new BlackFridayCanDiscountStrategy(blackFriday);
+        cart.DiscountStrategy = new PercentageDiscountStrategy(0.2m);
 
         // Act
         decimal result = cart.CalculateTotalPrice();
@@ -73,6 +73,33 @@ public class ShoppingCartTests
         {
             OrderDate = order
         };
+
+        // Act
+        decimal result = cart.CalculateTotalPrice();
+
+        // Assert
+        Assert.Equal(expectedPrice, result, 2);
+    }
+
+    [Theory]
+    [InlineData(100.0, "2023-11-24", "2023-11-24", 95.0)] // Black Friday
+    [InlineData(150.0, "2023-12-25", "2023-12-25", 145.0)] // Black Friday
+    public void CalculateTotalPrice_BlackFridayFixed_DiscountApplied(
+       decimal price, string specialDate, string orderDate, decimal expectedPrice)
+    {
+        // Arrange
+        TimeSpan from = TimeSpan.Zero; // Irrelevant for Black Friday
+        TimeSpan to = TimeSpan.Zero;   // Irrelevant for Black Friday
+        DateTime blackFriday = DateTime.Parse(specialDate);
+        DateTime order = DateTime.Parse(orderDate);
+
+        var cart = new ShoppingCart(price)
+        {
+            OrderDate = order
+        };
+
+        cart.CanDiscountStrategy = new BlackFridayCanDiscountStrategy(blackFriday);
+        cart.DiscountStrategy = new FixedDiscountStrategy(5m);
 
         // Act
         decimal result = cart.CalculateTotalPrice();
