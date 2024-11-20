@@ -5,11 +5,13 @@ class Program
 {
     static void Main(string[] args)
     {
-        ICustomerValidator composeValidator = new CompositeCustomerValidator(new ICustomerValidator[]
-        {
+        IEnumerable<ICustomerValidator> validators = 
+         [
             new TaxNumberValidator(),
             new RegonValidator()
-        });
+        ];
+
+        ICustomerValidator composeValidator = new CompositeCustomerValidator(validators);
 
         CustomerController customerController = new CustomerController(composeValidator);
 
@@ -36,14 +38,11 @@ class Program
 
     private static void LoggerTest()
     {
-        IEnumerable<ILogger> loggers = new ILogger[]
-        {
-            new SqlLogger("server=abc"),
-            new WindowsEventLogLogger(source: "My app"),
-            new FileLogger(directory: "c:\\logs")
-        };
 
-        ILogger composite = new CompositeLogger(loggers);
+        CompositeLogger composite = new CompositeLogger();
+        composite.AddLogger(new SqlLogger("server=abc"));
+        composite.AddLogger(new WindowsEventLogLogger(source: "My app"));
+        composite.AddLogger(new FileLogger(directory: "c:\\logs"));
 
         var component = new Component(composite);
 

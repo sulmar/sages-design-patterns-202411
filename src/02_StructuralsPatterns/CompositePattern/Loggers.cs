@@ -64,11 +64,12 @@ public class Component
 
 public class CompositeLogger : ILogger
 {
-    private readonly IEnumerable<ILogger> loggers;
+    private readonly List<ILogger> loggers = [];
+    
 
-    public CompositeLogger(IEnumerable<ILogger> loggers)
+    public void AddLogger(ILogger logger)
     {
-        this.loggers = loggers;
+        loggers.Add(logger);
     }
 
     public void Log(string message)
