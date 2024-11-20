@@ -61,7 +61,13 @@ public class Component
     {
         foreach (var logger in loggers)
         {
-            logger.Log("DoSomething called");
+            try
+            {
+                logger.Log("DoSomething called");
+            }
+            catch
+            {
+            }
         }
 
     }
