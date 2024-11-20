@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualBasic;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -11,12 +9,24 @@ namespace FlyweightPattern
         static void Main(string[] args)
         {
             Console.WriteLine("Hello Flyweight Pattern!");
-            
-            
+
+            SensorTest();
 
             // Game game = new Game(TreeFactory.Create());
             //
             // game.Play();
+        }
+
+        private static void SensorTest()
+        {
+            var tempSensor1 = new Sensor("Temperatura", "T100", "SensTech", "Sala szkoleniowa", 1, 22.5);
+            var humiditySensor1 = new Sensor("Wilgotność", "H200", "HumTech", "Sala szkoleniowa", 1, 42.5);
+            var tempSensor2 = new Sensor("Temperatura", "T100", "SensTech", "Serwerownia", 2, 5.0);
+
+            tempSensor1.DisplaySensorData();
+            humiditySensor1.DisplaySensorData();
+            tempSensor2.DisplaySensorData();
+
         }
     }
 
