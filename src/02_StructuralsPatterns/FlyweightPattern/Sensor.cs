@@ -10,6 +10,7 @@ public class Sensor
     public string Room { get; set; }
     public byte Floor { get; set; }
     public double Value { get; set; }
+    public byte[] Image { get; set; }
 
     public Sensor(string type, string model, string manufacture, string room, byte floor, double value)
     {
@@ -19,6 +20,7 @@ public class Sensor
         Room = room;
         Floor = floor;
         Value = value;
+        Image = new byte[1024];
     }
 
     public void DisplaySensorData()
