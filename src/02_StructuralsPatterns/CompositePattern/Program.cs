@@ -3,10 +3,19 @@ namespace CompositePattern;
 class Program
 {
     static void Main(string[] args)
-    {       
-        Console.Write("Are you developer?");       
+    {
+        // FormTest();
 
-        if (Response) {
+
+
+    }
+
+    private static void FormTest()
+    {
+        Console.Write("Are you developer?");
+
+        if (Response)
+        {
 
             Console.Write("Do you know C#?");
 
@@ -24,8 +33,6 @@ class Program
         {
             Console.WriteLine("Have a nice day.");
         }
-
-
     }
 
     public static bool Response => Console.ReadKey().Key == ConsoleKey.Y;
