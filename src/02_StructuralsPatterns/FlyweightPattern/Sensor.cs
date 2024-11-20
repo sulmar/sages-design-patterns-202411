@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace FlyweightPattern;
-
 
 public class SensorFactory
 {
@@ -18,12 +14,16 @@ public class SensorFactory
 
         if (!_sensors.ContainsKey(key))
         {
-            _sensors[key] = new Sensor(type, model, manufacture);   
+            var sensor = new Sensor(type, model, manufacture);
+            sensor.LoadImage();
+
+            _sensors[key] = sensor;   
         }
 
         return _sensors[key];
     }
 }
+
 
 public class SensorLocation
 {
@@ -59,7 +59,12 @@ public class Sensor
     {
         Type = type;
         Model = model;
-        Manufacture = manufacture;
+        Manufacture = manufacture;        
+    }
+
+    public void LoadImage()
+    {
+        Thread.Sleep(1000);
 
         Image = new byte[1024];
     }
