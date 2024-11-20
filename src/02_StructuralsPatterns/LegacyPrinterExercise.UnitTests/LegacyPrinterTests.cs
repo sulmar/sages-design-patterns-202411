@@ -2,8 +2,54 @@ using Microsoft.VisualStudio.TestPlatform.Utilities;
 
 namespace LegacyPrinterExercise.UnitTests;
 
+public class PrinterTests
+{
+    [Fact]
+    public void PrintDocument_PerCopy_ShouldReturnCost()
+    {
+        // Arrange
+        var printer = new CostPrinterDecorator(new Printer(), new PerCopyCostStrategy(0.1m));
+
+        // Act
+        printer.Print("a", 3);
+
+        // Assert
+        Assert.Equal(0.3m, printer.Cost);
+    }
+
+    [Fact]
+    public void PrintDocument_Length_ShouldReturnCost()
+    {
+        // Arrange
+        var printer = new CostPrinterDecorator(new Printer(), new LengthCostStrategy(0.1m));
+
+        // Act
+        printer.Print("abc", 3);
+
+        // Assert
+        Assert.Equal(0.9m, printer.Cost);
+    }
+}
+
 public class LegacyPrinterTests
 {
+
+    [Fact]
+    public void PrintDocument_Multi_ShouldReturnCost()
+    {
+        // Arrange
+        PrinterAdapterFactory factory = new PrinterAdapterFactory();
+
+        IPrinterAdapter printerAdapter = factory.Create("legacy");
+
+        var printer = new CostPrinterDecorator(printerAdapter, new PerCopyCostStrategy(0.2m));
+
+        // Act
+        printer.Print("a", 3);
+        
+        // Assert
+        Assert.Equal(0.6m, printer.Cost);
+    }
 
     [Fact]
     public void PrintDocument_Multi_ShouldCalledMulti()
