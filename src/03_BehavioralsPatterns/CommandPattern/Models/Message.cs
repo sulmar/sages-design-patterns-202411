@@ -1,46 +1,83 @@
 ﻿using System;
+using System.Reflection.Metadata;
 
-namespace CommandPattern
+namespace CommandPattern;
+
+// Abstract Command
+public interface ICommand
 {
-    public class Message
+    void Execute();
+
+    public bool CanExecute()
     {
-        public Message(string from, string to, string content)
-        {
-            From = from;
-            To = to;
-            Content = content;
-        }
+        return true;
+    }
+}
 
-        public string From { get; set; }
-        public string To { get; set; }
-        public string Content { get; set; }
+// Concrete Command A
+public class SendCommand : ICommand
+{
+    public Message Message { get; }
 
-     
-        public void Send()
-        {
-            Console.WriteLine($"Send message from <{From}> to <{To}> {Content}");
-        }
+    public SendCommand(Message message)
+    {
+        Message = message;
+    }
 
-        public bool CanSend()
-        {
-            return !(string.IsNullOrEmpty(From) || string.IsNullOrEmpty(To) || string.IsNullOrEmpty(Content));
-        }
+    public void Execute()
+    {
+        if (CanExecute())
+            Console.WriteLine($"Send message from <{Message.From}> to <{Message.To}> {Message.Content}");
+    }
 
-        public void Print(byte copies = 1)
+    public bool CanExecute()
+    {
+        return !(string.IsNullOrEmpty(Message.From) || string.IsNullOrEmpty(Message.To) || string.IsNullOrEmpty(Message.Content));
+    }
+}
+
+// Concrete Command B
+public class PrintCommand : ICommand
+{
+    public Message Message { get; }
+
+    public int copies { get; }
+
+    public PrintCommand(Message message, int copies)
+    {
+        this.Message = message;
+        this.copies = copies;
+    }
+
+    public void Execute()
+    {
+        if (CanExecute())
         {
             for (int i = 0; i < copies; i++)
             {
-                Console.WriteLine($"Print message from <{From}> to <{To}> {Content}");
+                Console.WriteLine($"Print message from <{Message.From}> to <{Message.To}> {Message.Content}");
             }
         }
-
-        public bool CanPrint()
-        {
-            return string.IsNullOrEmpty(Content);
-        }
-
-
-
     }
+
+    public bool CanExecute()
+    {
+        return string.IsNullOrEmpty(Message.Content);
+    }
+}
+
+
+public class Message
+{
+    public Message(string from, string to, string content)
+    {
+        From = from;
+        To = to;
+        Content = content;
+    }
+
+    public string From { get; set; }
+    public string To { get; set; }
+    public string Content { get; set; }
 
 }
