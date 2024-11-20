@@ -11,7 +11,7 @@ public class LegacyPrinter
         Console.WriteLine($"Legacy Printer is printing: {document}");
     }
 }
-``
+```
 
 Tego kodu nie może modyfikować.
 
