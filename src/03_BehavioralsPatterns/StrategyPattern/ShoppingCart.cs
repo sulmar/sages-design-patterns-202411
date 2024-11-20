@@ -2,40 +2,84 @@
 
 namespace StrategyPattern;
 
+// Abstract Strategy
+public interface IDiscountStrategy
+{
+    bool CanDiscount(DateTime dateTime);
+    decimal Discount(decimal price);
+}
+
+public abstract class DelegateDiscountStrategy : IDiscountStrategy
+{
+    private readonly Func<DateTime, bool> _canDiscount;
+    private readonly Func<decimal, decimal> _discount;
+
+    protected DelegateDiscountStrategy(Func<DateTime, bool> canDiscount, Func<decimal, decimal> discount)
+    {
+        _canDiscount = canDiscount;
+        _discount = discount;
+    }
+
+    public bool CanDiscount(DateTime OrderDate) => _canDiscount.Invoke(OrderDate);
+    public decimal Discount(decimal price) => _discount.Invoke(price);
+}
+
+public class HappyHoursDelegateDiscountStrategy : DelegateDiscountStrategy, IDiscountStrategy
+{ 
+    public HappyHoursDelegateDiscountStrategy(TimeSpan from, TimeSpan to, decimal percentage = 0.90m)
+        : base(
+        OrderDate => OrderDate.TimeOfDay >= from && OrderDate.TimeOfDay <= to,
+        price => price * percentage)
+    {
+    }
+}
+
+public class HappyHoursDiscountStrategy(TimeSpan from, TimeSpan to, decimal percentage = 0.10m) : IDiscountStrategy
+{
+    public bool CanDiscount(DateTime OrderDate) => OrderDate.TimeOfDay >= from && OrderDate.TimeOfDay <= to;
+    public decimal Discount(decimal price) => price * percentage;
+}
+
+public class BlackFridayDiscountStrategy(DateTime specialDate, decimal percentage = 0.20m) : IDiscountStrategy
+{
+    public bool CanDiscount(DateTime OrderDate) => OrderDate == specialDate;
+    public decimal Discount(decimal price) => price * percentage; // 20% zniżki
+}
+
+public class NoDiscountStrategy : IDiscountStrategy
+{
+    public bool CanDiscount(DateTime dateTime) => true;
+    public decimal Discount(decimal price) => 0;
+}
+
 public class ShoppingCart
 {
-    private double _price;
-    private readonly TimeSpan from;
-    private readonly TimeSpan to;
-    private readonly DateTime specialDate;
+    private decimal _price;
 
     public DateTime OrderDate { get; set; }
 
-    public ShoppingCart(double price, TimeSpan from, TimeSpan to, DateTime specialDate)
+    public IDiscountStrategy DiscountStrategy { get; set; }
+
+
+    public ShoppingCart(decimal price)
     {
         _price = price;
-        this.from = from;
-        this.to = to;
-        this.specialDate = specialDate;
+
+        DiscountStrategy = new NoDiscountStrategy();
     }
 
     // Obliczanie ceny na podstawie zniżki
-    public double CalculateTotalPrice()
+    public decimal CalculateTotalPrice()
     {
-        // Happy Hours
-        if (OrderDate.TimeOfDay >= from && OrderDate.TimeOfDay <= to)
+        if (DiscountStrategy.CanDiscount(OrderDate))
         {
-            return _price * 0.90; // 10% zniżki
-        }
-        // Black Friday
-        else if (OrderDate == specialDate)
-        {
-            return _price * 0.80; // 20% zniżki
+            return _price - DiscountStrategy.Discount(_price);
         }
         else
         {
-            // No Discount
-            return _price; // Brak zniżki
+            return _price;
         }
+
+
     }
 }
