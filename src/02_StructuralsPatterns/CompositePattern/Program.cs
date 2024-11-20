@@ -1,15 +1,32 @@
+
 namespace CompositePattern;
 
 class Program
 {
     static void Main(string[] args)
     {
+        LoggerTest();
+
         // BuildingTest();
 
-        FormTest();
+       // FormTest();
 
         Console.ReadLine();
 
+    }
+
+    private static void LoggerTest()
+    {
+        ILogger composite = new CompositeLogger(new ILogger[]
+        {
+            new SqlLogger("server=abc"),
+            new WindowsEventLogLogger(source: "My app"),
+            new FileLogger(directory: "c:\\logs")
+        });
+
+        var component = new Component(composite);
+
+        component.DoSomething();
     }
 
     private static void BuildingTest()
