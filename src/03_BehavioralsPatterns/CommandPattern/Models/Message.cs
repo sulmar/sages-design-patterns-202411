@@ -1,7 +1,9 @@
 ﻿using System;
-using System.Reflection.Metadata;
+using System.Threading;
 
 namespace CommandPattern;
+
+
 
 // Abstract Command
 public interface ICommand
@@ -11,6 +13,26 @@ public interface ICommand
     public bool CanExecute()
     {
         return true;
+    }
+}
+
+public class BackgroundService
+{
+    private readonly ICommand _command;
+
+    public BackgroundService(ICommand command)
+    {
+        _command = command;
+    }
+
+    public void DoWork()
+    {
+        while(true)
+        {
+            _command.Execute();
+
+            Thread.Sleep(1000);
+        }
     }
 }
 
