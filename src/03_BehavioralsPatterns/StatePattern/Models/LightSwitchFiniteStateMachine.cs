@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.PortableExecutable;
 using System.Text;
@@ -19,7 +20,21 @@ public class LightSwitch
 
     public virtual void Push() {
 
-       
+        if (State == LightSwitchState.Off)
+        {
+            Console.WriteLine("załącz przekaźnik");
+
+            State = LightSwitchState.On;
+            return;
+        }
+
+        if (State == LightSwitchState.On)
+        {
+            Console.WriteLine("wyłącz przekaźnik");
+
+            State = LightSwitchState.Off;
+            return;
+        }
 
     }
 }
