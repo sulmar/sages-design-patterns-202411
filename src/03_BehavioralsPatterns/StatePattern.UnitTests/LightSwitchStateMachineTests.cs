@@ -65,8 +65,6 @@ public class LightSwitchTests
 
         var serviceProvider = services.BuildServiceProvider();
 
-        IRelayService relayService = serviceProvider.GetRequiredService<IRelayService>();
-
         IMediator mediator = serviceProvider.GetRequiredService<IMediator>();
 
         LightSwitchStateMachineFactory factory = new LightSwitchStateMachineFactory(mediator);

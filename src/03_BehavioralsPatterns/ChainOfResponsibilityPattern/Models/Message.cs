@@ -130,7 +130,7 @@ public class ExtractTaxNumberFromBodyHandler : MessageHandler
 // Abstraction Builder
 public interface IMessageHandlerBuilder 
 {
-    MessageHandlerBuilder Register(IMessageHandler next);
+    IMessageHandlerBuilder Register(IMessageHandler next);
     IMessageHandler Build();
 }
 
@@ -140,7 +140,7 @@ public class MessageHandlerBuilder : IMessageHandlerBuilder
     private IMessageHandler rootHandler;
     private IMessageHandler prevHandler;
 
-    public MessageHandlerBuilder Register(IMessageHandler next)
+    public IMessageHandlerBuilder Register(IMessageHandler next)
     {
         if (rootHandler == null && prevHandler == null)
         {
@@ -158,6 +158,33 @@ public class MessageHandlerBuilder : IMessageHandlerBuilder
 
     public IMessageHandler Build() => rootHandler;
 }
+
+public class MessageHandlerByLinqBuilder : IMessageHandlerBuilder
+{
+    private readonly List<IMessageHandler> handlers = new();
+
+    public IMessageHandlerBuilder Register(IMessageHandler next)
+    {
+        handlers.Add(next);
+        return this;
+    }
+
+    public IMessageHandler Build()
+    {
+        if (!handlers.Any())
+            return null;
+
+        // Łączenie handlerów za pomocą Zip i Skip
+        handlers.Zip(handlers.Skip(1), (current, next) =>
+        {
+            current.SetNext(next);
+            return current;
+        }).ToList(); // Wykonujemy Zip dla efektów ubocznych
+
+        return handlers.First();
+    }
+}
+
 
 
 public class MessageHandlerComposite : IMessageHandler

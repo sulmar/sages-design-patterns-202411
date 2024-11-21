@@ -14,7 +14,7 @@ namespace ChainOfResponsibilityPattern.UnitTests.UnitTests
             // Arrange
             string[] whiteList = new string[] { "john@domain.com", "bob@domain.com" };
 
-            var messageHandler = new MessageHandlerBuilder()
+            var messageHandler = new MessageHandlerByLinqBuilder()
                     .Register(new ValidateFromWhitelistHandler(whiteList))
                     .Register(new ValidateTitleContainsOrderHandler())
                     .Register(new ExtractTaxNumberFromBodyHandler())
