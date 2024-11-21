@@ -16,12 +16,22 @@ namespace MementoPattern
 
         private static void ArticleTest()
         {
+            IArticleCaretaker caretaker = new StackArticleCaretaker();
+                 
             var article = new Article();
             article.Content = "a";
+
+            caretaker.SetState(article.CreateMemento());
+
             article.Content = "b";
+            caretaker.SetState(article.CreateMemento());
+
             article.Content = "c";
-            
-            // TODO: Undo
+            caretaker.SetState(article.CreateMemento());
+
+            article.SetMemento(caretaker.GetState());
+            article.SetMemento(caretaker.GetState());
+
         }
 
         private static void AgreementTest()
