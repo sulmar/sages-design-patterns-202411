@@ -2,27 +2,24 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace StatePattern.Models.FiniteStateMachine;
 
-
-// dotnet add package stateless
-
-public class LightSwitch
+public interface ILightSwitch
 {
-    public LightSwitchState State => _machine.State;
+    LightSwitchState State { get; set; }
+    void Push();
+}
 
+// Proxy - wariant klasowy
+public class LightSwitchProxy : LightSwitch
+{
     private readonly StateMachine<LightSwitchState, LightSwitchTrigger> _machine;
 
-
-    // private readonly Stack<Transaction> history = [];
-
-    public string Graph => Stateless.Graph.UmlDotGraph.Format(_machine.GetInfo());
-    
-
-    public LightSwitch()
+    public LightSwitchProxy()
     {
         _machine = new StateMachine<LightSwitchState, LightSwitchTrigger>(LightSwitchState.Off);
 
@@ -40,10 +37,30 @@ public class LightSwitch
         _machine.OnTransitioned(t => Console.WriteLine($"{t.Trigger} : {t.Source} -> {t.Destination} "));
 
         // _machine.OnTransitioned(t => history.Push(t));
-        
+    }
+    // private readonly Stack<Transaction> history = [];
+
+    public string Graph => Stateless.Graph.UmlDotGraph.Format(_machine.GetInfo());
+
+    public virtual void Push() => _machine.Fire(LightSwitchTrigger.Push);
+}
+
+// dotnet add package stateless
+
+public class LightSwitch : ILightSwitch
+{
+    public virtual LightSwitchState State { get; set; }
+
+    public LightSwitch()
+    {
+        State = LightSwitchState.Off;
     }
 
-    public void Push() => _machine.Fire(LightSwitchTrigger.Push);
+    public virtual void Push() {
+
+       
+
+    }
 }
 
 public enum LightSwitchState

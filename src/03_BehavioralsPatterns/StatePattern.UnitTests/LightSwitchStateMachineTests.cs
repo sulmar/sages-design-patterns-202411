@@ -71,7 +71,7 @@ public class LightSwitchTests
     {
 
         // Arrange
-        FSM.LightSwitch lightSwitch = new FSM.LightSwitch();
+        FSM.LightSwitchProxy lightSwitch = new FSM.LightSwitchProxy();
 
         // Act
         var result = lightSwitch.Graph;
