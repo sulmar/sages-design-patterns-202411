@@ -14,9 +14,24 @@ namespace FlyweightPattern
 
             SensorTest();
 
+            MapTest();
+
             // Game game = new Game(TreeFactory.Create());
             //
             // game.Play();
+        }
+
+        private static void MapTest()
+        {
+            PointService pointService = new PointService();
+
+            var points = pointService.GetAll();
+
+            foreach (var point in points)
+            {
+                point.Draw();
+            }
+
         }
 
 
