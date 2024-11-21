@@ -11,7 +11,10 @@ namespace VisitorPattern
 
             Form form = Get();
 
-            string html = form.GetHtml();
+            IVisitor visitor = new HtmlVisitor();
+            form.Accept(visitor);
+
+            string html = visitor.GetHtml();
 
             System.IO.File.WriteAllText("index.html", html);
         }
