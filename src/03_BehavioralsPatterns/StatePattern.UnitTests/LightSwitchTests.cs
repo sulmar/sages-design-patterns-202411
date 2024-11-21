@@ -59,6 +59,7 @@ namespace StatePattern.UnitTests
             lightSwitch.Push();
             lightSwitch.Push();
             lightSwitch.Push();
+            lightSwitch.Push();
 
             // Assert
             Assert.IsInstanceOfType<Off>(lightSwitch.State);
