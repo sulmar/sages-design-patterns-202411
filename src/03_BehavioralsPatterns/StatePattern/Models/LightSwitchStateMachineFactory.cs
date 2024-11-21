@@ -1,4 +1,5 @@
-﻿using Stateless;
+﻿using MediatR;
+using Stateless;
 using System;
 
 namespace StatePattern.Models.FiniteStateMachine;

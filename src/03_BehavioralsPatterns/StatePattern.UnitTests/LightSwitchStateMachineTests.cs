@@ -1,4 +1,7 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using MediatR;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using StatePattern.Events;
 using StatePattern.Models.FiniteStateMachine;
 using FSM = StatePattern.Models.FiniteStateMachine;
 
@@ -53,9 +56,18 @@ public class LightSwitchTests
     {
 
         // Arrange
-        IMediator mediator = new Mediator();
-        mediator.Register(new FakeRelayService());
-        mediator.Register(new FakeMessageService());
+        var services = new ServiceCollection();
+        services.AddTransient<IRelayService, FakeRelayService>();
+        services.AddTransient<IMessageService, FakeMessageService>();
+
+
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<OffEvent>());
+
+        var serviceProvider = services.BuildServiceProvider();
+
+        IRelayService relayService = serviceProvider.GetRequiredService<IRelayService>();
+
+        IMediator mediator = serviceProvider.GetRequiredService<IMediator>();
 
         LightSwitchStateMachineFactory factory = new LightSwitchStateMachineFactory(mediator);
 
@@ -77,11 +89,9 @@ public class LightSwitchTests
     {
 
         // Arrange
-        IMediator mediator = new Mediator();
-        mediator.Register(new FakeRelayService());
-        mediator.Register(new FakeMessageService());
+       
 
-        LightSwitchStateMachineFactory factory = new LightSwitchStateMachineFactory(mediator);
+        LightSwitchStateMachineFactory factory = new LightSwitchStateMachineFactory(null);
         FSM.LightSwitchProxy lightSwitch = new FSM.LightSwitchProxy(factory.Create("abc"));
 
         // Act
