@@ -1,16 +1,19 @@
-﻿var shoppingCart = new ShoppingCart();
+﻿using MediatorPattern;
+using System.Net.Http.Headers;
+
+
 var paymentProcessor = new PaymentProcessor();
 var emailNotifier = new EmailNotifier();
+
+ShoppingMediator mediator = new ShoppingMediator(paymentProcessor, emailNotifier);
+var shoppingCart = new ShoppingCart(mediator);
 
 // Dodaj produkty do koszyka
 shoppingCart.AddItem("Laptop", 1200.99m);
 shoppingCart.AddItem("Mouse", 25.49m);
 
 // Koszyk rozpoczyna proces płatności
-shoppingCart.Checkout(paymentProcessor);
-
-// Po przetworzeniu płatności wysyłamy potwierdzenie
-emailNotifier.SendConfirmation("user@example.com");
+shoppingCart.Checkout();
 
 // Czyścimy koszyk
 shoppingCart.ClearCart();
@@ -19,6 +22,13 @@ public class ShoppingCart
 {
     private readonly List<string> _items = new List<string>();
     private decimal _totalAmount = 0;
+
+    private IShoppingMediator _mediator;
+
+    public ShoppingCart(IShoppingMediator mediator)
+    {
+        _mediator = mediator;
+    }
 
     public void AddItem(string item, decimal price)
     {
@@ -29,10 +39,11 @@ public class ShoppingCart
 
     public decimal GetTotalAmount() => _totalAmount;
 
-    public void Checkout(PaymentProcessor paymentProcessor)
+    public void Checkout()
     {
         Console.WriteLine("ShoppingCart: Initiating checkout...");
-        paymentProcessor.ProcessPayment(_totalAmount);
+
+        _mediator.ProcessPayment(_totalAmount);
     }
 
     public void ClearCart()
