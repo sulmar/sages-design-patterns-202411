@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-
+using StatePattern.Models.FiniteStateMachine;
 using FSM = StatePattern.Models.FiniteStateMachine;
 
 namespace StatePattern.UnitTests.StateMachine;
@@ -71,7 +71,8 @@ public class LightSwitchTests
     {
 
         // Arrange
-        FSM.LightSwitchProxy lightSwitch = new FSM.LightSwitchProxy();
+        LightSwitchStateMachineFactory factory = new LightSwitchStateMachineFactory();
+        FSM.LightSwitchProxy lightSwitch = new FSM.LightSwitchProxy(factory.Create("abc"));
 
         // Act
         var result = lightSwitch.Graph;
