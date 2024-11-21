@@ -1,47 +1,76 @@
 ﻿using System;
 
-namespace NullObjectPattern
+namespace NullObjectPattern;
+
+class Program
 {
-    class Program
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
+        Console.WriteLine("Hello Null Object Pattern!");
+
+        IProductRepository productRepository = new FakeProductRepository();
+
+        // Pobierz produkt z ID 1
+        ProductBase product1 = productRepository.Get(1);
+        product1.RateId(3);
+
+        // Pobierz produkt z ID 2
+        ProductBase product2 = productRepository.Get(2);
+        product2.RateId(5);
+
+        // Pobierz produkt z ID 999 (nieistniejący)
+        ProductBase product3 = productRepository.Get(999);
+        product3.RateId(7);
+
+    }
+}
+
+public interface IProductRepository
+{
+    ProductBase Get(int id);
+}
+
+public class FakeProductRepository : IProductRepository
+{
+    // Symulacja pobierania z repozytorium
+    public ProductBase Get(int id) =>
+        id switch
         {
-            Console.WriteLine("Hello Null Object Pattern!");
+            1 => new Product(),// Realny produkt
+            2 => new Product(),// Realny produkt
+            _ => ProductBase.Null,// Null Object
+        };
+}
 
-            IProductRepository productRepository = new FakeProductRepository();
+// Abstract Object
+public abstract class ProductBase
+{
+    protected int rate;
 
-            Product product = productRepository.Get(1);
+    public abstract void RateId(int rate);
 
-            // Problem: Zawsze musimy sprawdzać czy obiekt nie jest pusty (null).
+    public static readonly ProductBase Null = new NullProduct();
 
-            if (product != null)
-            {
-                product.RateId(3);
-            }
+    // Null Object
+    private class NullProduct : ProductBase
+    {
+        public override void RateId(int rate)
+        {
+            // nic nie rób
+            Console.WriteLine("Cannot rate a null product.");
         }
     }
+}
 
-    public interface IProductRepository
+// Real Object
+public class Product : ProductBase
+{
+    private int rate;
+
+    public override void RateId(int rate)
     {
-        Product Get(int id);
+        this.rate = rate;
+        Console.WriteLine($"Product rated with {rate}.");
     }
 
-    public class FakeProductRepository : IProductRepository
-    {
-        public Product Get(int id)
-        {
-            return null;
-        }
-    }
-
-    public class Product
-    {
-        private int rate;
-
-        public void RateId(int rate)
-        {
-            this.rate = rate;
-        }
-
-    }
 }
