@@ -161,7 +161,7 @@ public class MessageHandlerBuilder : IMessageHandlerBuilder
 
 public class MessageHandlerByLinqBuilder : IMessageHandlerBuilder
 {
-    private readonly List<IMessageHandler> handlers = new();
+    private readonly List<IMessageHandler> handlers = new();    
 
     public IMessageHandlerBuilder Register(IMessageHandler next)
     {

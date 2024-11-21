@@ -25,11 +25,10 @@ namespace VisitorPattern
 
                 Body = new Collection<Control>
                 {
-
-                    new Control { Type = ControlType.Label, Caption = "Person", Name = "lblName" },
-                    new Control { Type = ControlType.TextBox, Caption = "FirstName", Name = "txtFirstName", Value = "John"},
-                    new Control { Type = ControlType.Checkbox, Caption = "IsAdult", Name = "chkIsAdult", Value = "true" },
-                    new Control {  Type = ControlType.Button, Caption = "Submit", Name = "btnSubmit", ImageSource = "save.png" },
+                    new Label { Caption = "Person", Name = "lblName" },
+                    new TextBox { Caption = "FirstName", Name = "txtFirstName", Value = "John"},
+                    new Checkbox { Caption = "IsAdult", Name = "chkIsAdult", Value = true },
+                    new Button {  Caption = "Submit", Name = "btnSubmit", ImageSource = "save.png" },
                 }
 
             };
