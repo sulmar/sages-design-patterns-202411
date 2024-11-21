@@ -53,9 +53,15 @@ public class LightSwitchTests
     {
 
         // Arrange
-        FSM.LightSwitch lightSwitch = new FSM.LightSwitch();
+        IMediator mediator = new Mediator();
+        mediator.Register(new FakeRelayService());
+        mediator.Register(new FakeMessageService());
 
-        
+        LightSwitchStateMachineFactory factory = new LightSwitchStateMachineFactory(mediator);
+
+        FSM.LightSwitchProxy lightSwitch = new FSM.LightSwitchProxy(factory.Create("abc"));
+
+
 
         // Act
         lightSwitch.Push();
@@ -71,7 +77,11 @@ public class LightSwitchTests
     {
 
         // Arrange
-        LightSwitchStateMachineFactory factory = new LightSwitchStateMachineFactory();
+        IMediator mediator = new Mediator();
+        mediator.Register(new FakeRelayService());
+        mediator.Register(new FakeMessageService());
+
+        LightSwitchStateMachineFactory factory = new LightSwitchStateMachineFactory(mediator);
         FSM.LightSwitchProxy lightSwitch = new FSM.LightSwitchProxy(factory.Create("abc"));
 
         // Act

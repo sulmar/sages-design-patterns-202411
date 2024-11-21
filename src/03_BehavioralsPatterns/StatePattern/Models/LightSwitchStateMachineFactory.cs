@@ -6,21 +6,19 @@ namespace StatePattern.Models.FiniteStateMachine;
 // Factory
 public class LightSwitchStateMachineFactory
 {
-    private readonly IRelayService relayService;
-    private readonly IMessageService messageService;
+    private readonly IMediator mediator;
 
-    public LightSwitchStateMachineFactory(IRelayService relayService, IMessageService messageService)
+    public LightSwitchStateMachineFactory(IMediator mediator)
     {
-        this.relayService = relayService;
-        this.messageService = messageService;
+        this.mediator = mediator;
     }
 
     public StateMachine<LightSwitchState, LightSwitchTrigger> Create(string model)
     {
         switch (model)
         {
-            case "abc": return new AbcStateMachine(relayService, messageService);
-            case "xyz": return new AbcStateMachine(relayService, messageService);
+            case "abc": return new AbcStateMachine(mediator);
+            case "xyz": return new AbcStateMachine(mediator);
 
             default: throw new NotSupportedException();
         }
