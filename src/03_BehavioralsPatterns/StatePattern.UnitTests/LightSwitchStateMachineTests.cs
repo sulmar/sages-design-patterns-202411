@@ -45,7 +45,39 @@ public class LightSwitchTests
         lightSwitch.Push();
 
         // Assert
+        Assert.AreEqual(FSM.LightSwitchState.Medium, lightSwitch.State);
+    }
+
+    [TestMethod]
+    public void PushDown_Th_ShouldStateIsOff()
+    {
+
+        // Arrange
+        FSM.LightSwitch lightSwitch = new FSM.LightSwitch();
+
+        
+
+        // Act
+        lightSwitch.Push();
+        lightSwitch.Push();
+        lightSwitch.Push();
+
+        // Assert
         Assert.AreEqual(FSM.LightSwitchState.Off, lightSwitch.State);
+    }
+
+    [TestMethod]
+    public void Graph_WhenCalled_ShouldReturnGraph()
+    {
+
+        // Arrange
+        FSM.LightSwitch lightSwitch = new FSM.LightSwitch();
+
+        // Act
+        var result = lightSwitch.Graph;
+
+        // Assert
+        Assert.IsNotNull(result);
     }
 
 }
